@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket app to parse data from to backend</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+<div style="margin: 0;position: absolute;top: 50%;left: 50%;-ms-transform: translate(-50%, -80%);transform: translate(-50%, -80%);font-size: x-large">
+        {% csrf_token %}
+    <label style="margin:auto;text-align: center" for="data"><u>Enter data you wish to send: </u></label><br>
+    <input style="margin:auto;display:block;margin-top:5px;" name="data" id="data" type="text">
+    <button id="sendb" style="background:greenyellow;margin:auto;display:block;margin-top:5px;">Send</button>
+</div>
+{% block js %}
+<script>
+    const url='ws://localhost:8000/ws/socket/';
+    const ws=new WebSocket(url);
+    ws.onopen=function (event){
+        console.log("opened socket");
+        // ws.send("sending via websockets");
+    }
+
+     ws.onclose=function (event){
+        console.log("closed socket");
+    }
+    ws.onmessage=function (event){
+        console.log("recieving message to print message passed");
+        alert("You had sent the data: "+event.data);
+        console.log(event);
+    }
+    ws.onerror=function (event)
+    {
+        console.log("Something went wrong");
+    }
+
+    const message=document.getElementById('#data');
+    // message.addEventListener('submit',sendmessage);
+
+    $("#sendb").click(function ()
+    {
+        // console.log(document.getElementById('#data').value)
+        ws.send(document.getElementById('data').value);
+        console.log("sent");
+    });
+</script>
+{% endblock js %}
+</body>
+</html>
